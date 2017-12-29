@@ -58,13 +58,10 @@ public class GetOneTypeGoodsUnitPriceOfEachMonthServlet extends HttpServlet {
       //生成JSON数据  
         JSONStringer stringer = new JSONStringer();     
         JSONObject object = new JSONObject();  
+        object.put("msg", msg);
         try {    
             stringer.array();    
-            
-            stringer.object().  
-            key("msg").value(msg).   
-            endObject();
-            
+                       
             for(int i=0;i<unitPriceList.size();i++) {     
                 stringer.object().  
                 key((i+1)+"").value(unitPriceList.get(i)).

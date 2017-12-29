@@ -12,6 +12,21 @@ public class GoodsInOneOrder{
 	public String producerAddress;
 	public Date dateOfManufacture;
 	public Date dateOfStock;
+	public String url;
+	public int ifMatch;
+	
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public int getIfMatch() {
+		return ifMatch;
+	}
+	public void setIfMatch(int ifMatch) {
+		this.ifMatch = ifMatch;
+	}
 	public long getId() {
 		return id;
 	}

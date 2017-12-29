@@ -45,7 +45,13 @@ public class GetUserByRoleIdServlet extends HttpServlet {
 		User user = new User();
 		user.setName("gg");
 		user.setRole(1);
-		user.setTel("123456");
+		user.setTel(123456);
+		user.setPassword("12345678");
+		userList.add(user);
+		user = new User();
+		user.setName("gg");
+		user.setRole(1);
+		user.setTel(123456);
 		user.setPassword("12345678");
 		userList.add(user);
 		
@@ -54,12 +60,9 @@ public class GetUserByRoleIdServlet extends HttpServlet {
         //生成JSON数据  
         JSONStringer stringer = new JSONStringer();     
         JSONObject object = new JSONObject();  
+        object.element("msg", msg);
         try {    
-        	stringer.array();    
-            stringer.object().  
-            key("msg").value(msg).   
-            endObject();
-            
+        	stringer.array();          
             try {      
 	             for(User u : userList) {     
 	            	 stringer.object().  

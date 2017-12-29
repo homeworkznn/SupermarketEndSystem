@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Database.GetDataFromMySql;
 import model.GoodsInOneOrder;
 import model.Order;
 import net.sf.json.JSONObject;
@@ -42,91 +44,69 @@ public class GetOrderListByDateServlet extends HttpServlet {
 		String month = request.getParameter("month");
 		String day = request.getParameter("day");
 		
+		GetDataFromMySql getData =new GetDataFromMySql();
 		String string = "2016-10-24 21:59:06";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
+        
+        String strOrderId = request.getParameter("orderId");
+		long orderId =-1;
+		List<Order> order = new ArrayList();
+		List<GoodsInOneOrder> goodsList = new ArrayList<>();
 		/*
-		 * select order info from database by date
+		 * select order info from database by orderId
 		 */
         String msg = "yes";
-        
-		List<Order> orderList = new ArrayList<>();
-		Order order = new Order();
-		order.setId(1);
-		order.setMachineNum(0);
-		order.setPrice((float)123.12);
-		order.setTotalNum(2);
-		try {
-			order.setCreateTime(sdf.parse(string));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		List<GoodsInOneOrder> goodsList = new ArrayList<>();
-		GoodsInOneOrder goods = new GoodsInOneOrder();
-		for(int i=0;i<2;i++){
-			goods = new GoodsInOneOrder();
-			goods.setId(1);
-			goods.setGoodsName("百事可乐123ml");
-			goods.setType(1);
-			goods.setSinglePrice((float)232.22);
-			goods.setTotalPrice((float)344.33);
-			goods.setProducerAddress("hhh");
-			goods.setTotalNum(2);
+        if(strOrderId!=null&&strOrderId!=""){
+			orderId = Long.parseLong(strOrderId);
+			order = getData.GetOrdersByOrderIdOrMachineNum(12345, -1, 0);
 			try {
-				goods.setDateOfManufacture(sdf.parse(string));
-				goods.setDateOfStock(sdf.parse(string));
-			} catch (ParseException e) {
+				goodsList = getData.GetGoodsInfoInOneOrder(12345);
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			goodsList.add(goods);
 		}
-		order.setGoodsInOneOrder(goodsList);
-		orderList.add(order);
+		if(order==null){
+			msg="error";
+		}else{
+			
+		}
 		
 		//生成JSON数据      
         JSONObject object = new JSONObject(); 
+        object.put("msg", msg);
         try {    
-            JSONObject j3  = new JSONObject();
-            j3.put("msg", msg);
-            int i=0;
-            for(Order o : orderList) {
-            	JSONObject j0  = new JSONObject();
-            	j0.put("orderId", o.id);
-            	j0.put("createTime", o.createTime);
-            	j0.put("machineNum", o.machineNum);
-            	j0.put("price", o.price);
-            	j0.put("totalNum", o.totalNum);
-            	JSONObject j2  = new JSONObject();
-            	for(int j=0;j<o.goodsInOneOrder.size();j++){
-            		JSONObject j1  = new JSONObject();
-            		j1.put("goodsId", o.getGoodsInOneOrder().get(j).id);
-            		j1.put("goodsName", o.getGoodsInOneOrder().get(j).goodsName);
-            		j1.put("type", o.getGoodsInOneOrder().get(j).type);
-            		j1.put("totalNum", o.getGoodsInOneOrder().get(j).totalNum);
-            		j1.put("singlePrice", o.getGoodsInOneOrder().get(j).singlePrice);
-            		j1.put("totalPrice", o.getGoodsInOneOrder().get(j).totalPrice);
-            		j1.put("producerAddress", o.getGoodsInOneOrder().get(j).producerAddress);
-            		j1.put("dateOfManufacture", o.getGoodsInOneOrder().get(j).dateOfManufacture);
-            		j1.put("dateOfStock", o.getGoodsInOneOrder().get(j).dateOfStock);
-            		j2.put("goods"+j, j1);
-            	}
-            	j0.put("goods", j2);
-            	j3.put("order"+i, j0);
-            	i++;
-            }  
+            JSONObject j0  = new JSONObject();
+        	j0.put("orderId", order.get(0).id);
+        	j0.put("createTime", order.get(0).createTime);
+        	j0.put("machineNum", order.get(0).machineNum);
+        	j0.put("price", order.get(0).price);
+        	j0.put("totalNum", order.get(0).totalNum);
+        	JSONObject j2  = new JSONObject();
+        	for(int j=0;j<goodsList.size();j++){
+        		JSONObject j1  = new JSONObject();
+        		j1.put("goodsId", goodsList.get(j).getId());
+        		j1.put("goodsName", goodsList.get(j).getGoodsName());
+        		j1.put("type", goodsList.get(j).getType());
+        		j1.put("totalNum", goodsList.get(j).getTotalNum());
+        		j1.put("singlePrice", goodsList.get(j).singlePrice);
+        		j1.put("totalPrice", goodsList.get(j).getTotalPrice());
+        		j1.put("producerAddress", goodsList.get(j).getProducerAddress());
+        		j1.put("dateOfManufacture", goodsList.get(j).getDateOfManufacture());
+        		j1.put("dateOfStock", goodsList.get(j).getDateOfStock());
+        		j1.put("url",goodsList.get(j).getUrl());
+        		j1.put("ifMatch",goodsList.get(j).getIfMatch());
+        		j2.put("goods"+j, j1);
+        	}
+        	j0.put("goods", j2);
             
-            object.put("res", j3);  
+            object.put("res", j0);  
         } catch (Exception e) {    
             e.printStackTrace();    
         }  
         
         response.getOutputStream().write(object.toString().getBytes("UTF-8"));    
         response.setContentType("text/json; charset=UTF-8"); 
-		
-		
 	}
 
 	/**

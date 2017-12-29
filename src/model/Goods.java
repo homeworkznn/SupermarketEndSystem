@@ -1,4 +1,4 @@
-package model;
+ package model;
 
 import java.util.Date;
 
@@ -11,14 +11,20 @@ public class Goods{
 	public Date dateOfManufacture;
 	public Date dateOfStock;
 	public String picUrl;
-	public String chipId;
+	public int num;
+	public int ifMatchChip;
 	
-	
-	public String getChipId() {
-		return chipId;
+	public int getIfMatchChip() {
+		return ifMatchChip;
 	}
-	public void setChipId(String chipId) {
-		this.chipId = chipId;
+	public void setIfMatchChip(int ifMatchChip) {
+		this.ifMatchChip = ifMatchChip;
+	}
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
 	}
 	public String getPicUrl() {
 		return picUrl;

@@ -37,6 +37,7 @@ public class GetAllChipTypeServlet extends HttpServlet {
 		/*
 		 * select all chip types in the database
 		 */
+        
         String msg = "yes";
         
         List<List<String>> chiptypelist = new ArrayList<>();

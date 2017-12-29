@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+import Database.GetDataFromMySql;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONStringer;
 
@@ -31,26 +33,26 @@ public class LoginServlet extends HttpServlet {
 		response.setHeader("Content-type", "text/html;charset=UTF-8");    
         response.setContentType("text/html;charset=utf-8"); 
         
-		String id = request.getParameter("id");
+		String strId = request.getParameter("id");
 		String tel = request.getParameter("tel");
 		String password = request.getParameter("password");
-		
+		long id=0;
 		/*
 		 * login operation,set msg = yes if user message match
 		 */
 		String msg = "yes";
+		GetDataFromMySql get = new GetDataFromMySql();
+		if(strId!=null&&strId!=""){		
+			id=Long.parseLong(strId);
+			String responPassword = get.selectAdmin_ID_Password(id);
+			if(password!=responPassword||!password.equals(responPassword)){
+				msg="error";
+			}
+		}
 		
-		//生成JSON数据  
-        JSONStringer stringer = new JSONStringer();     
-        JSONObject object = new JSONObject();  
-          
-        stringer.array();    
-        stringer.object().  
-        key("msg").value(msg).   
-        endObject();
-          
-        stringer.endArray();  
-        object.element("res", stringer.toString());     
+		//生成JSON数据      
+        JSONObject object = new JSONObject();    
+        object.element("msg", msg);     
        
         response.getOutputStream().write(object.toString().getBytes("UTF-8"));    
         response.setContentType("text/json; charset=UTF-8"); 

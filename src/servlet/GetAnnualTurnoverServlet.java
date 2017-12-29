@@ -64,18 +64,14 @@ public class GetAnnualTurnoverServlet extends HttpServlet {
       //生成JSON数据  
         JSONStringer stringer = new JSONStringer();     
         JSONObject object = new JSONObject();  
+        object.put("msg", msg);
         try {    
-            stringer.array();    
-            stringer.object().  
-            key("msg").value(msg).   
-            endObject();
-            
+            stringer.array();                   
             for(AnnualTurnoverOfOneGoods g : goodsTurnoverList) {     
                 stringer.object().  
                 key("goodsType").value(g.goodsType).   
                 key("goodsName").value(g.goodsName).
                 key("goodsId").value(g.goodsId).
-                key("goodsName").value(g.goodsName).
                 key("annualAverageUnitPrice").value(g.annualAverageUnitPrice).
                 key("annualTurnover").value(g.annualTurnover).  
                 key("annualIncome").value(g.annualIncome).

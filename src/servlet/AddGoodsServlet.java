@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Database.AddToMysql;
 import model.Goods;
 import model.User;
 import net.sf.json.JSONObject;
@@ -38,15 +39,21 @@ public class AddGoodsServlet extends HttpServlet {
         
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
-		String strType = request.getParameter("type");
+        String strGoodsId = request.getParameter("goodsId");
+		String strTypeId = request.getParameter("typeId");
 		String goodsName = request.getParameter("goodsName");
 		String strPrice = request.getParameter("price");
+		String strNum = request.getParameter("num");
 		String producerAddress = request.getParameter("producerAddress");
 		String strDateOfManufacture = request.getParameter("dateOfManufacture");
 		String strDateOfStock = request.getParameter("dateOfStock");
-		int type=0;
-		if(strType != null&& strType != ""){
-			type = Integer.parseInt(strType);
+		int typeId=0;
+		if(strTypeId != null&& strTypeId != ""){
+			typeId = Integer.parseInt(strTypeId);
+		}
+		int num=0;
+		if(strNum != null&& strNum != ""){
+			num = Integer.parseInt(strNum);
 		}
 		float price=0;
 		if(strPrice != null&& strPrice != ""){
@@ -60,37 +67,25 @@ public class AddGoodsServlet extends HttpServlet {
 		if(strDateOfStock != null&& strDateOfStock != ""){
 			dateOfStock = strDateOfStock;
 		}
-		
-		Goods goods = new Goods();
-		goods.setType(type);
-		goods.setPrice(price);
-		goods.setProducerAddress(producerAddress);
-		goods.setGoodsName(goodsName);
-		try {
-			goods.setDateOfManufacture(sdf.parse(dateOfManufacture));
-			goods.setDateOfStock(sdf.parse(dateOfStock));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		long goodsId=0;
+		if(strGoodsId != null&& strGoodsId != ""){
+			goodsId = Long.parseLong(strGoodsId);
 		}
 		
 		/*
 		 * insert new goods into database,if finish,set msg to yes
 		 *
 		 */
+		AddToMysql addmysql =new AddToMysql();
+		int result=addmysql.addGoods(goodsId, typeId, goodsName, price, producerAddress, num,dateOfManufacture, dateOfStock);
+		//int result=addmysql.addGoods(112222222, 1, "ceshi", (float) 12.12, "222", 2,dateOfManufacture, dateOfStock);
 		String msg = "yes";
-		
-		//生成JSON数据  
-        JSONStringer stringer = new JSONStringer();     
-        JSONObject object = new JSONObject();  
-          
-        stringer.array();    
-        stringer.object().  
-        key("msg").value(msg).   
-        endObject();
-          
-        stringer.endArray();  
-        object.element("res", stringer.toString());     
+		if(result==0){
+			msg = "error";
+		}
+		//生成JSON数据     
+        JSONObject object = new JSONObject();     
+        object.element("msg", msg);     
        
         response.getOutputStream().write(object.toString().getBytes("UTF-8"));    
         response.setContentType("text/json; charset=UTF-8"); 

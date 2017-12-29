@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Database.DeleteFromMysql;
+
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONStringer;
 
@@ -31,23 +33,27 @@ public class DeleteOrderByIdServlet extends HttpServlet {
 		response.setHeader("Content-type", "text/html;charset=UTF-8");    
         response.setContentType("text/html;charset=utf-8"); 
         
-		String id = request.getParameter("id");
+        DeleteFromMysql delete = new DeleteFromMysql();
+		String strId = request.getParameter("id");
+		long id = -1;
 		/*
 		 * delete order from database by orderId,if finish,set msg to yes
 		 *
 		 */	
 		String msg = "yes";
-        
+		int result = 1;
+		if(strId!=null&&strId!=""){
+			id=Long.parseLong(strId);
+			result=delete.deleteOrders(id);
+		}
+		if(result==0)
+			msg="error";
+			
         //生成JSON数据  
         JSONStringer stringer = new JSONStringer();     
         JSONObject object = new JSONObject();  
-        try {    
-        	stringer.array();    
-            stringer.object().  
-            key("msg").value(msg).   
-            endObject();
-            stringer.endArray();  
-            object.element("res", stringer.toString());
+        try {           	 
+            object.put("msg", msg);
             
             response.getOutputStream().write(object.toString().getBytes("UTF-8"));    
             response.setContentType("text/json; charset=UTF-8"); 

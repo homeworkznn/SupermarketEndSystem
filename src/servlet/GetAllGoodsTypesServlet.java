@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Database.GetDataFromMySql;
 import model.GoodsType;
 import model.User;
 import net.sf.json.JSONObject;
@@ -41,15 +42,12 @@ public class GetAllGoodsTypesServlet extends HttpServlet {
 		 */
         String msg = "yes";
         
+        GetDataFromMySql getData = new GetDataFromMySql();
         List<GoodsType> list = new ArrayList<>();
-        GoodsType goodsType = new GoodsType();
-        goodsType.setTypeId(1);
-        goodsType.setTypeName("baishi");
-        list.add(goodsType);
-        
+        list=getData.getAllGoodsType();
         //生成JSON数据      
         JSONObject object = new JSONObject();  
-        object.element("msg", msg);
+        object.put("msg", msg);
         try {      
         	int i=0;
         	JSONObject j0  = new JSONObject();

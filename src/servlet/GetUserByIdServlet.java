@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Database.GetDataFromMySql;
 import model.Goods;
 import model.User;
 import net.sf.json.JSONObject;
@@ -33,37 +34,35 @@ public class GetUserByIdServlet extends HttpServlet {
 		response.setHeader("Content-type", "text/html;charset=UTF-8");    
         response.setContentType("text/html;charset=utf-8"); 
         
-		String id = request.getParameter("id");
+        GetDataFromMySql getData =new GetDataFromMySql();
+		String id = request.getParameter("userId");
+		int userId = 0;
 		/*
 		 * select user from database by id
 		 *
 		 */
+		String msg="yes";
 		User user = new User();
-		user.setName("gg");
-		user.setRole(1);
-		user.setTel("123456");
-		user.setPassword("12345678");
+		//if(id!=null&&id!=""){
+			//userId = Integer.parseInt(id);
+			user=getData.getUserInfoById(123);
+		//}else{
+		//	msg="error";
+		//}
 		
-		String msg = "yes";
         
       //生成JSON数据  
         JSONStringer stringer = new JSONStringer();     
         JSONObject object = new JSONObject();  
         try {    
-        	stringer.array();    
-            stringer.object().  
-            key("msg").value(msg).   
-            endObject();
-            
-            stringer.object().  
-            key("id").value(user.id).   
-            key("name").value(user.name).
-            key("role").value(user.role).
-            key("tel").value(user.tel).
-            key("password").value(user.password).
-            endObject();
-            stringer.endArray();  
-            object.element("res", stringer.toString());  
+        	object.put("msg", msg);            
+        	JSONObject j1  = new JSONObject();
+       	    j1.put("id", user.id);
+       	    j1.put("name", user.name);
+       	    j1.put("role", user.role);
+       	    j1.put("tel", user.tel);
+    	    j1.put("password", user.password);
+    	    object.put("res", j1);  
             
             response.getOutputStream().write(object.toString().getBytes("UTF-8"));    
             response.setContentType("text/json; charset=UTF-8"); 

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Database.UpdateToMysql;
 import model.Chip;
 import net.sf.json.JSONObject;
 
@@ -36,11 +37,21 @@ public class UpdateGoodsIdOfOneChipServlet extends HttpServlet {
         
         String chipId = request.getParameter("chipId");
         String strGoodsId = request.getParameter("goodsId");
-        
+        UpdateToMysql update = new UpdateToMysql();
 		/*
 		 * update goodsId of one chip in the database
 		 */
         String msg = "yes";
+        int goodsId=0;
+        int result = 0;
+        if(strGoodsId!=null&&strGoodsId!=""){
+        	goodsId = Integer.parseInt(strGoodsId);
+        	result = update.UpdateGoodsIdOfOneChipByChipId(chipId, goodsId);
+        }else{
+        	msg="error";
+        }
+        if(result==0)
+        	msg="error";
         
         //生成JSON数据      
         JSONObject object = new JSONObject();  

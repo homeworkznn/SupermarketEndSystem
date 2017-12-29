@@ -4,7 +4,7 @@ public class User{
 	public long id;
 	public String name;
 	public int role;
-	public String tel;
+	public long tel;
 	public String password;
 	
 	public long getId() {
@@ -25,11 +25,11 @@ public class User{
 	public void setRole(int role) {
 		this.role = role;
 	}
-	public String getTel() {
+	public long getTel() {
 		return tel;
 	}
-	public void setTel(String tel) {
-		this.tel = tel;
+	public void setTel(long l) {
+		this.tel = l;
 	}
 	public String getPassword() {
 		return password;

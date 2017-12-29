@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Database.GetDataFromMySql;
 import model.Authority;
 import model.Chip;
 import net.sf.json.JSONObject;
@@ -38,14 +39,15 @@ public class GetAllChipsServlet extends HttpServlet {
 		/*
 		 * select all chips in the database
 		 */
+        GetDataFromMySql getData =new GetDataFromMySql();
         String msg = "yes";
-        
         List<Chip> list = new ArrayList<>();
-        Chip chip = new Chip();
+        list = getData.getAllChips();
+        /*Chip chip = new Chip();
         chip.setId("A456");
         chip.setState(1);
         chip.setGoodsId(12);
-        list.add(chip);
+        list.add(chip);*/
         
         //生成JSON数据      
         JSONObject object = new JSONObject();  

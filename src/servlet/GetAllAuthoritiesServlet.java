@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import model.Authority;
-import model.GoodsType;
+import Database.GetDataFromMySql;
 import net.sf.json.JSONObject;
 
 /**
@@ -38,13 +38,15 @@ public class GetAllAuthoritiesServlet extends HttpServlet {
 		/*
 		 * select all authorities in the database
 		 */
+        GetDataFromMySql getData= new GetDataFromMySql();
         String msg = "yes";
         
         List<Authority> list = new ArrayList<>();
-        Authority authority = new Authority();
+        list=getData.getAllAuthority();
+        /*Authority authority = new Authority();
         authority.setId(0);
         authority.setLayoutName("Login");
-        list.add(authority);
+        list.add(authority);*/
         
         //生成JSON数据      
         JSONObject object = new JSONObject();  
